@@ -3,12 +3,13 @@ import { RootState } from "../store";
 
 interface User {
 	id: string;
+	_id: string;
 	name: string;
 	email: string;
 }
 
 interface AuthState {
-	user: User | null;
+	user: any;
 	token: string | null;
 	refreshToken: string | null;
 	isAuthenticated: boolean;

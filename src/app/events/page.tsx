@@ -1,3 +1,6 @@
+"use client";
+import { useGetAllUpcomingEventsQuery } from "@/redux/services/api";
+import Image from "next/image";
 import Link from "next/link";
 
 // Mock data for events
@@ -68,6 +71,9 @@ const events = [
 ];
 
 export default function EventsPage() {
+	const { isLoading, data } = useGetAllUpcomingEventsQuery({});
+	console.log("🚀 ~ EventsPage ~ data:", data);
+
 	return (
 		<div className="bg-[#0A0A0B] py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -83,13 +89,14 @@ export default function EventsPage() {
 				</div>
 
 				<div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-					{events.map((event) => (
+					{data?.data.map((event: any) => (
 						<article
 							key={event.id}
 							className="flex max-w-xl flex-col items-start border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
 						>
-							<div className="w-full aspect-video bg-transparent flex items-center justify-center">
-								<svg
+							<div className="relative aspect-video bg-transparent flex items-center justify-center w-full h-full">
+								<Image layout="fill" src={event?.image} alt="event" />
+								{/* <svg
 									className="w-12 h-12 text-gray-300"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
@@ -102,18 +109,18 @@ export default function EventsPage() {
 										strokeLinejoin="round"
 										d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
 									/>
-								</svg>
+								</svg> */}
 							</div>
 
 							<div className="p-6 flex-1 flex flex-col">
 								<div className="flex items-center gap-x-4 text-xs mb-2">
 									<time
-										dateTime="2023-03-16"
+										dateTime={event?.time}
 										className="text-gray-300"
 									>
 										{event.date}
 									</time>
-									<div className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600">
+									<div className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 capitalize">
 										{event.category}
 									</div>
 								</div>
@@ -127,8 +134,8 @@ export default function EventsPage() {
 											{event.title}
 										</Link>
 									</h3>
-									<div className="text-sm text-gray-500 mt-1 mb-2">
-										{event.location}
+									<div className="text-sm text-gray-500 mt-1 mb-2 truncate max-w-[40ch]">
+										{event.location?.address}
 									</div>
 									<p className="mt-2 line-clamp-3 text-sm leading-6 text-white">
 										{event.description}
@@ -137,10 +144,11 @@ export default function EventsPage() {
 
 								<div className="mt-4 flex items-center justify-between">
 									<div className="text-sm text-gray-300">
-										By {event.organizer}
+										By {event.organizer?.name}
 									</div>
 									<div className="font-medium text-primary-default">
-										{event.price}
+										{event.price?.currency}
+										{event.price?.amount}
 									</div>
 								</div>
 
